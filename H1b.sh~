@@ -2,13 +2,13 @@
 show_menu()
 {
     NORMAL=`echo "\033[m"`
-    MENU=`echo "\033[36m"` #Red
-    NUMBER=`echo "\033[33m"` #yellow
+    MENU=`echo "\033[1;36m"` #Red
+    NUMBER=`echo "\033[1;33m"` #yellow
     FGRED=`echo "\033[41m"`
     RED_TEXT=`echo "\033[31m"`
     ENTER_LINE=`echo "\033[33m"`
-    echo -e "${MENU}\e[1m\e[47m\e[95m******************************H1B DashBoard******************************************${NORMAL}"
-echo -e "${MENU} \e[39m#Use the following options to perform the operation on H1B dataset # ${NORMAL}"
+    echo -e "${MENU}\e[1m\e[47m\e[1;35m------------------------------[H1B DashBoard]---------------------------------${NORMAL}"
+echo -e "${NUMBER} [Use the following options to perform the operation on H1B dataset]${NUMBER}"
     echo -e "${MENU}${NUMBER} 1)${MENU}  Is the number of petitions with Data Engineer job title increasing over time? ${NORMAL}"
     echo -e "${MENU}${NUMBER} 2)${MENU}  Find top 5 job titles who are having highest avg growth in applications.
  ${NORMAL}"
@@ -30,8 +30,8 @@ echo -e "${MENU}${NUMBER} 14)${MENU} Which are the jobpositions along with the n
 echo -e "${MENU}${NUMBER} 15)${MENU} Export result for question no 10 to MySql database.${NORMAL}"
 
 
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
+    echo -e "${NUMBER}-----------------------------------------------${NUMBER}"
+    echo -e "${NUMBER}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NUMBER}"
     read opt
 }
 function option_picked() 
@@ -59,14 +59,14 @@ while [ opt != '' ]
         case $opt in
         1) clear;
         hadoop jar h1b.jar Ques1a /user/hive/warehouse/h1b.db/h1b_final /h1b/output/ans1a;
- 	hadoop fs -cat /h1b/ans1a/p*;
+ 	hadoop fs -cat /h1b/output/ans1a/p*;
 
         show_menu;
         ;;
 
         2) clear;
 	hadoop jar h1b.jar Ques1b /user/hive/warehouse/h1b.db/h1b_final /h1b/output/ans1b;
-	hadoop fs -cat /h1b/ans1b/p*;
+	hadoop fs -cat /h1b/output/ans1b/p*;
 
         show_menu;
         ;;
@@ -170,8 +170,9 @@ while [ opt != '' ]
         ;;
     
         10) clear;
-        hadoop jar h1b.jar Ques7 /user/hive/warehouse/h1b.db/h1b_final h1b/output/ans7;
- 	hadoop fs -cat /output/ans7/p*;
+	hadoop fs -rmr /h1b/output/ans7;
+        hadoop jar h1b.jar Ques7 /user/hive/warehouse/h1b.db/h1b_final /h1b/output/ans7;
+ 	hadoop fs -cat /h1b/output/ans7/p*;
 
         show_menu;
         ;;
@@ -188,18 +189,20 @@ while [ opt != '' ]
         
 
  13) clear;
-	hadoop jar h1b.jar Ques9 /user/hive/warehouse/h1b.db/h1b_final h1b/output/ans9;
-	hadoop fs -cat /output/ans9/p*;
+	hadoop jar h1b.jar Ques9 /user/hive/warehouse/h1b.db/h1b_final /h1b/output/ans9;
+	hadoop fs -cat /h1b/output/ans9/p*;
  	show_menu;
         ;;
 14) clear;
-	hadoop jar h1b1.jar Ques10 /user/hive/warehouse/h1b.db/h1b_final h1b/output/ans10;
-	hadoop fs -cat /output/ans10/p*;
+	hadoop fs -rmr /h1b/output/ans10;
+	hadoop jar h1b.jar Ques10 /user/hive/warehouse/h1b.db/h1b_final /h1b/output/ans10;
+	hadoop fs -cat /h1b/output/ans10/p*;
  	show_menu;
         ;;
 15) clear;
         option_picked "Now lets export the Ans10 to MySql";
-	sqoop export --connect jdbc:mysql://localhost/h1b --username root --password '1231' --table exportques10 --export-dir /h1b/ques10output --input-fields-terminated-by '\t' ;
+	sqoop export --connect jdbc:mysql://localhost/h1b --username root --password '1231' --table exportques10 --export-dir /h1b/output/ans10 --input-fields-terminated-by '\t' ;
+show_menu;
 ;;
 
        
